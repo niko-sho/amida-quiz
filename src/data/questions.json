@@ -1,0 +1,62 @@
+[
+  {
+    "question": "猫が好きな新入社員は誰？",
+    "correct": "yamada",
+    "candidates": [
+      {
+        "id": "yamada",
+        "name": "山田太郎",
+        "okVideo": "/videos/yamada_ok.mp4",
+        "ngImage": "/images/yamada_ng.png"
+      },
+      {
+        "id": "suzuki",
+        "name": "鈴木花子",
+        "okVideo": "/videos/suzuki_ok.mp4",
+        "ngImage": "/images/suzuki_ng.png"
+      },
+      {
+        "id": "tanaka",
+        "name": "田中一郎",
+        "okVideo": "/videos/tanaka_ok.mp4",
+        "ngImage": "/images/tanaka_ng.png"
+      },
+      {
+        "id": "ito",
+        "name": "伊藤彩",
+        "okVideo": "/videos/ito_ok.mp4",
+        "ngImage": "/images/ito_ng.png"
+      }
+    ]
+  },
+  {
+    "question": "一番早起きなのは誰？",
+    "correct": "ito",
+    "candidates": [
+      {
+        "id": "yamada",
+        "name": "山田太郎",
+        "okVideo": "/videos/yamada_ok.mp4",
+        "ngImage": "/images/yamada_ng.png"
+      },
+      {
+        "id": "suzuki",
+        "name": "鈴木花子",
+        "okVideo": "/videos/suzuki_ok.mp4",
+        "ngImage": "/images/suzuki_ng.png"
+      },
+      {
+        "id": "tanaka",
+        "name": "田中一郎",
+        "okVideo": "/videos/tanaka_ok.mp4",
+        "ngImage": "/images/tanaka_ng.png"
+      },
+      {
+        "id": "ito",
+        "name": "伊藤彩",
+        "okVideo": "/videos/ito_ok.mp4",
+        "ngImage": "/images/ito_ng.png"
+      }
+    ]
+  }
+] 
