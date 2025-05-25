@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import questions from './data/questions.json';
+import './App.css';
 
 interface Candidate {
   id: string;
@@ -15,123 +16,172 @@ interface Question {
   candidates: Candidate[];
 }
 
+interface AnswerHistory {
+  question: string;
+  correct: string;
+  attempts: string[];
+}
+
 const App = () => {
-  const [idx, setIdx] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [result, setResult] = useState<'ok' | 'ng' | null>(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [showAnswerTable, setShowAnswerTable] = useState(false);
+  const [answerHistories, setAnswerHistories] = useState<AnswerHistory[]>([]);
+  const [currentAttempts, setCurrentAttempts] = useState<string[]>([]);
 
-  const q = questions[idx] as Question;
+  const currentQuestion = questions[currentQuestionIndex] as Question;
 
-  const handleSelect = (id: string) => {
-    if (selected) return;
-    setSelected(id);
-    const isCorrect = id === q.correct;
-    setResult(isCorrect ? 'ok' : 'ng');
+  const handleCandidateClick = (candidate: Candidate) => {
+    const isAnswerCorrect = candidate.id === currentQuestion.correct;
+    setIsCorrect(isAnswerCorrect);
+    setShowResult(true);
+    
+    // 現在の問題の回答履歴に追加
+    setCurrentAttempts(prev => [...prev, candidate.name]);
+
+    if (isAnswerCorrect) {
+      // 正解した場合、回答履歴を保存
+      setAnswerHistories(prev => [...prev, {
+        question: currentQuestion.question,
+        correct: currentQuestion.candidates.find(c => c.id === currentQuestion.correct)?.name || '',
+        attempts: [...currentAttempts, candidate.name]
+      }]);
+      // 次の問題のために回答履歴をリセット
+      setCurrentAttempts([]);
+    }
   };
 
-  const handleNext = () => {
-    setIdx((p) => p + 1);
-    setSelected(null);
-    setResult(null);
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      setShowResult(false);
+    }
   };
 
-  const handleRetry = () => {
-    setSelected(null);
-    setResult(null);
+  const handleTryAgain = () => {
+    setShowResult(false);
   };
 
-  if (idx >= questions.length) {
+  if (showAnswerTable) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4 p-4 text-center">
-        <h1 className="text-3xl font-bold">全問クリア！🎉</h1>
-        <video src="/videos/clear.mp4" autoPlay playsInline muted loop className="w-64 rounded-lg" />
+      <div className="min-h-screen bg-gray-100 py-8 px-4">
+        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-center mb-6">クイズ結果</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="py-3 px-4 text-left">問題</th>
+                  <th className="py-3 px-4 text-left">正解</th>
+                  <th className="py-3 px-4 text-left">あなたの回答</th>
+                </tr>
+              </thead>
+              <tbody>
+                {answerHistories.map((history, index) => (
+                  <tr key={index} className="border-b hover:bg-gray-50">
+                    <td className="py-3 px-4">{history.question}</td>
+                    <td className="py-3 px-4">{history.correct}</td>
+                    <td className="py-3 px-4">
+                      <div className="space-y-1">
+                        {history.attempts.map((attempt, attemptIndex) => (
+                          <div
+                            key={attemptIndex}
+                            className={`px-2 py-1 rounded ${
+                              attempt === history.correct
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
+                            }`}
+                          >
+                            {attemptIndex + 1}回目: {attempt}
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // 候補者を2行に分割
-  const candidatesPerRow = Math.ceil(q.candidates.length / 2);
-  const row1 = q.candidates.slice(0, candidatesPerRow);
-  const row2 = q.candidates.slice(candidatesPerRow);
-
-  // 結果画面
-  if (selected && result) {
+  if (showResult) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-8 p-4">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">
-            {result === 'ok' ? '正解！🎉' : '不正解...😢'}
-          </h2>
-          {result === 'ok' ? (
-            <video
-              src={q.candidates.find((c) => c.id === selected)!.okVideo}
-              autoPlay
-              muted
-              playsInline
-              className="w-80 rounded-lg shadow-lg"
-            />
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full">
+          {isCorrect ? (
+            <>
+              <h2 className="text-2xl font-bold text-center mb-4">正解です！</h2>
+              <video
+                src={currentQuestion.candidates.find(c => c.id === currentQuestion.correct)?.okVideo}
+                autoPlay
+                className="w-full rounded-lg mb-4"
+              />
+              {currentQuestionIndex < questions.length - 1 ? (
+                <button
+                  onClick={handleNextQuestion}
+                  className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  次の問題へ
+                </button>
+              ) : (
+                <div className="text-center">
+                  <h3 className="text-xl font-bold mb-2">おめでとうございます！</h3>
+                  <p className="text-gray-600 mb-4">すべての問題をクリアしました！</p>
+                  <button
+                    onClick={() => setShowAnswerTable(true)}
+                    className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition-colors"
+                  >
+                    すべての回答を見る
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
-            <img
-              src={q.candidates.find((c) => c.id === selected)!.ngImage}
-              alt="不正解"
-              className="w-48 h-48 object-cover rounded-full border-4 border-red-200 mx-auto"
-            />
+            <>
+              <h2 className="text-2xl font-bold text-center mb-4">不正解です</h2>
+              <img
+                src={currentQuestion.candidates.find(c => c.id === currentQuestion.correct)?.ngImage}
+                alt="不正解"
+                className="w-full rounded-lg mb-4"
+              />
+              <button
+                onClick={handleTryAgain}
+                className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors"
+              >
+                もう一度挑戦
+              </button>
+            </>
           )}
         </div>
-        <button
-          onClick={result === 'ok' ? handleNext : handleRetry}
-          className={`px-8 py-3 rounded-lg text-white font-bold text-lg ${
-            result === 'ok' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
-          } transition-colors`}
-        >
-          {result === 'ok' ? '次の問題へ' : 'もう一度挑戦'}
-        </button>
       </div>
     );
   }
 
-  // 問題画面
   return (
-    <div className="min-h-screen flex flex-col items-center gap-8 p-4">
-      {/* 問題文 */}
-      <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-center">{q.question}</h1>
-      </div>
-
-      {/* 候補者グリッド */}
-      <div className="w-full max-w-3xl space-y-8">
-        {/* 1行目 */}
-        <div className="grid grid-cols-5 gap-4">
-          {row1.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => handleSelect(c.id)}
-              className="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <img
-                src={c.photo}
-                alt={c.name}
-                className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
-              />
-              <span className="text-sm font-medium">{c.name}</span>
-            </button>
-          ))}
+    <div className="min-h-screen bg-gray-100 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <h2 className="text-2xl font-bold mb-4">{currentQuestion.question}</h2>
         </div>
-
-        {/* 2行目 */}
         <div className="grid grid-cols-5 gap-4">
-          {row2.map((c) => (
+          {currentQuestion.candidates.map((candidate) => (
             <button
-              key={c.id}
-              onClick={() => handleSelect(c.id)}
-              className="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+              key={candidate.id}
+              onClick={() => handleCandidateClick(candidate)}
+              className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow"
             >
-              <img
-                src={c.photo}
-                alt={c.name}
-                className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
-              />
-              <span className="text-sm font-medium">{c.name}</span>
+              <div className="aspect-square rounded-full overflow-hidden mb-2">
+                <img
+                  src={candidate.ngImage}
+                  alt={candidate.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="text-center font-medium">{candidate.name}</p>
             </button>
           ))}
         </div>
