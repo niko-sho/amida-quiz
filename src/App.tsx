@@ -23,6 +23,9 @@ interface AnswerHistory {
 }
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -31,6 +34,16 @@ const App = () => {
   const [currentAttempts, setCurrentAttempts] = useState<string[]>([]);
 
   const currentQuestion = questions[currentQuestionIndex] as Question;
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === import.meta.env.VITE_APP_PASSWORD) {
+      setIsAuthenticated(true);
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  };
 
   const handleCandidateClick = (candidate: Candidate) => {
     const isAnswerCorrect = candidate.id === currentQuestion.correct;
@@ -62,6 +75,36 @@ const App = () => {
   const handleTryAgain = () => {
     setShowResult(false);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+          <h2 className="text-2xl font-bold text-center mb-6">パスワードを入力してください</h2>
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="パスワード"
+              />
+              {passwordError && (
+                <p className="mt-2 text-red-500 text-sm">パスワードが正しくありません</p>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              ログイン
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   if (showAnswerTable) {
     return (
