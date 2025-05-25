@@ -26,6 +26,42 @@
         "name": "伊藤彩",
         "okVideo": "/videos/ito_ok.mp4",
         "ngImage": "/images/ito_ng.png"
+      },
+      {
+        "id": "sato",
+        "name": "佐藤健太",
+        "okVideo": "/videos/sato_ok.mp4",
+        "ngImage": "/images/sato_ng.png"
+      },
+      {
+        "id": "takahashi",
+        "name": "高橋美咲",
+        "okVideo": "/videos/takahashi_ok.mp4",
+        "ngImage": "/images/takahashi_ng.png"
+      },
+      {
+        "id": "watanabe",
+        "name": "渡辺翔太",
+        "okVideo": "/videos/watanabe_ok.mp4",
+        "ngImage": "/images/watanabe_ng.png"
+      },
+      {
+        "id": "kobayashi",
+        "name": "小林優子",
+        "okVideo": "/videos/kobayashi_ok.mp4",
+        "ngImage": "/images/kobayashi_ng.png"
+      },
+      {
+        "id": "nakamura",
+        "name": "中村大輔",
+        "okVideo": "/videos/nakamura_ok.mp4",
+        "ngImage": "/images/nakamura_ng.png"
+      },
+      {
+        "id": "kato",
+        "name": "加藤莉子",
+        "okVideo": "/videos/kato_ok.mp4",
+        "ngImage": "/images/kato_ng.png"
       }
     ]
   },
@@ -56,6 +92,42 @@
         "name": "伊藤彩",
         "okVideo": "/videos/ito_ok.mp4",
         "ngImage": "/images/ito_ng.png"
+      },
+      {
+        "id": "sato",
+        "name": "佐藤健太",
+        "okVideo": "/videos/sato_ok.mp4",
+        "ngImage": "/images/sato_ng.png"
+      },
+      {
+        "id": "takahashi",
+        "name": "高橋美咲",
+        "okVideo": "/videos/takahashi_ok.mp4",
+        "ngImage": "/images/takahashi_ng.png"
+      },
+      {
+        "id": "watanabe",
+        "name": "渡辺翔太",
+        "okVideo": "/videos/watanabe_ok.mp4",
+        "ngImage": "/images/watanabe_ng.png"
+      },
+      {
+        "id": "kobayashi",
+        "name": "小林優子",
+        "okVideo": "/videos/kobayashi_ok.mp4",
+        "ngImage": "/images/kobayashi_ng.png"
+      },
+      {
+        "id": "nakamura",
+        "name": "中村大輔",
+        "okVideo": "/videos/nakamura_ok.mp4",
+        "ngImage": "/images/nakamura_ng.png"
+      },
+      {
+        "id": "kato",
+        "name": "加藤莉子",
+        "okVideo": "/videos/kato_ok.mp4",
+        "ngImage": "/images/kato_ng.png"
       }
     ]
   }
